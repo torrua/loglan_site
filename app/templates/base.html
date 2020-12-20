@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon"
+      type="image/png"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAADJ0lEQVQ4T21TWUwTURQ9701bpmWAAq2tUlCQQhBRjPrhEomoARMVExdI1A+/MIS6JeKX30YSNaL4YeKHGrcS14AmKmpEMCYajUsEWdQWQaoVSwfaaWfmaYcl1vj+7rn3nHffPfcR/Ofs3XvDLMuRVYTQWeNpVWc08hfq6ysG/i0nfwPV1RedvKBvAUOO0Wob5a3JRjDg5/tuPQgDCOlUJLWisbHq4yRvSqCmxl2u59UWoWCUKmICTOlFsCyeB0WKovv8Lczc2YefzywIdgoKZFrW0LClNSaiCdTUuHN1Caxr2mofTSocQeSHAUPN+cipXA/GgJ5z1+HY0Q2doCDwKhX+tnQ1JLK8M2eqejWB3fuufEyaIzqnrRnSOvv1Mg1hTwEyy0u0eOBBOwyON0hZMKzFvns2BDuT3jUcqywidXXXHOGI7M3e9QmUV7SC2C2hvnw41paCECDQ9Rkjng7YN3zW8rLI4cvZbDCZ5ZLa2qtHTJmRAxmVnql5MBXov5AL29ISJDpskENheFsegimjSFs+iMRcEd6Ls1h40HCUuFzuGynzgxutq7/FOeRvs8KgW4G04vxxnDGI/T4MtD5F1o5e+GMDfZvcTFyuppspxYEK66rx92uuRygGmmYitWAJzAUTqzCR+/78FQI9PaC8hIiPbya1tVcOm7KiBzO2eogajRGzIQ1RJM22Y0bpMhCOgskKGGOgep0mMzb4A1/vd0RlMXyI7N9/OVNm1JNd/Qmhfh7B14XIKFsJquO0YskfgKf5EVRZhW1JMaThEQhZ0+G90y5RUPuEje4uwSnmRX8ZYXYuROpc5zh5eASe262wlHrBFA7B91bw0wMYfmEGU+nVkyc2V8UtktGWTrPWl4JQAiUkoa/pLiwrvRDyglPzCbw2w/8kXY2Gaf7p01t7pqzbs+fSPNCE+4mZNsFessg0+LgDBnsv0pb5NLIyxsHfZoHYJahKhFt36tSWuzE87jO5XG4r0XFHoLLtjCn65EIRRK9CGjIyyacjhEM3VZTy48e39U22FCcwCdbV3ZoxNhbZRQgrin1BxtgHk4lrrK/f1B+3LH+C3+k0TOAiD2BKAAAAAElFTkSuQmCC"/>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>Loglan Online Dictionary</title>
+  </head>
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      padding-left: 20%;
+      padding-right: 20%;
+      min-width: 600px;
+      margin: 1%;
+    }
+
+    /* Style the header */
+    .header {
+      background-color: #f1f1f1;
+      padding: 10px;
+      text-align: center;
+    }
+
+    /* Create three equal columns that floats next to each other */
+    .column-main {
+      float: center;
+      padding-top: 15px;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    .word_data {
+      padding-top: 30px;
+    }
+    /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+    @media screen and (max-width:600px) {
+      .column {
+        width: 100%;
+      }
+    }
+
+	.lt > span {
+		font-size: 24px;
+		font-weight: bold;
+	}
+	w {
+		margin-top: 20px;
+	}
+	wl {
+		font-weight: bold;
+		display: block;
+	}
+	m, d, w, us {
+		display: block;
+	}
+	ms > *:not(:first-child) {
+		margin-top: 10px;
+	}
+	ms > * {
+		margin-left: 10px;
+	}
+
+	afx {
+		color: #007F00;
+		font-style: italic;
+	}
+	o {
+		color: #007F00;
+		font-style: italic;
+	}
+	d {
+		margin-left: 20px;
+		margin-top: 5px;
+
+		text-align: justify;
+		max-width: 90%;
+		min-width: 400px;
+	}
+	du {
+		font-weight: bold;
+	}
+	us {
+		margin-top: 5px;
+		max-width: 40%;
+		min-width: 400px;
+	}
+	k {
+		color: #0000FF;
+		font-style: italic;
+	}
+	l {
+		color: #C70039;
+		font-weight: bold;
+	}
+</style>
+<body>
+
+<div class="header">
+  <h1>Loglan Online Dictionary</h1>
+</div>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">LOD</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link active" aria-current="page" href="#">Home</a>
+        <a class="nav-link" href="#">L-to-E</a>
+        <a class="nav-link" href="#">E-to-L</a>
+        <a class="nav-link" href="#">How To Read</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+  <div class="column column-main">
+    <form id="search" class="d-flex">
+      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="word">
+    </form>
+    <div class="word_data">
+    <span id="word_data"></span>
+    </div>
+    {% block script %}{% endblock %}
+  </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+</body>
+</html>
