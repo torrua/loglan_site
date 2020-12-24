@@ -1,5 +1,62 @@
 {% extends 'base.html' %}
 
+
+{% block word_style %}
+	.lt > span {
+		font-size: 24px;
+		font-weight: bold;
+	}
+	w {
+		margin-top: 20px;
+	}
+	wl {
+		font-weight: bold;
+		display: block;
+	}
+	m, d, w, us {
+		display: block;
+	}
+	ms > *:not(:first-child) {
+		margin-top: 10px;
+	}
+	ms > * {
+		margin-left: 10px;
+	}
+
+	afx {
+		color: #007F00;
+		font-style: italic;
+	}
+	o {
+		color: #007F00;
+		font-style: italic;
+	}
+	d {
+		margin-left: 20px;
+		margin-top: 5px;
+
+		text-align: justify;
+		max-width: 90%;
+		min-width: 400px;
+	}
+	du {
+		font-weight: bold;
+	}
+	us {
+		margin-top: 5px;
+		max-width: 40%;
+		min-width: 400px;
+	}
+	k {
+		color: #0000FF;
+		font-style: italic;
+	}
+	l {
+		color: #C70039;
+		font-weight: bold;
+	}
+{% endblock %}
+
 {% block script %}
   <script>
     function addSubmit(ev) {
