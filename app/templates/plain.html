@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
+{% block title %}
+    <title>Loglan Online Dictionary</title>
+{% endblock %}
 
-{% block word_style %}
+{% block style %}
 	.lt > span {
 		font-size: 24px;
 		font-weight: bold;
@@ -57,7 +60,18 @@
 	}
 {% endblock %}
 
-{% block script %}
+{% block content %}
+
+    <div class="container search">
+      <form id="search" class="d-flex">
+        <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="word">
+      </form>
+    </div>
+
+    <div class="container word_data">
+        <span id="word_data"></span>
+    </div>
+
   <script>
     function addSubmit(ev) {
       ev.preventDefault();
