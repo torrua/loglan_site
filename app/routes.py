@@ -3,10 +3,28 @@ from loglan_db.model_html import HTMLExportWord as Word
 from app import app
 
 
+"""
 @app.route("/", defaults={"js": "plain"})
 @app.route("/<any(plain, jquery, fetch):js>")
 def index(js):
     return render_template(f"{js}.html", js=js)
+"""
+
+
+@app.route("/")
+@app.route("/home")
+def home():
+    return render_template("home.html")
+
+
+@app.route("/search")
+def search():
+    return render_template("search.html")
+
+
+@app.route("/how_to_read")
+def how_to_read():
+    return render_template("reading.html")
 
 
 @app.route("/get_loglan_word", methods=["POST"])
@@ -23,7 +41,3 @@ def get_loglan_word():
     res_text = "<br>".join([name, tech, definitions, used_in])
     return jsonify(result=res_text)
 
-
-@app.route("/how_to_read", methods=["GET", "POST"])
-def how_to_read():
-    return render_template("reading.html")
