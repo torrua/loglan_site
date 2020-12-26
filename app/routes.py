@@ -1,4 +1,4 @@
-from flask import jsonify,  render_template, request, send_from_directory
+from flask import jsonify,  render_template, request
 from loglan_db.model_html import HTMLExportWord as Word
 from app import app
 
@@ -30,14 +30,5 @@ def how_to_read():
 @app.route("/get_loglan_word", methods=["POST"])
 def get_loglan_word():
     word = request.form.get("word", "", type=str)
-    word_obj = Word.by_name(word).first()
-    name = f"<b>{word_obj.name}</b>,"
-    meaning = word_obj.meaning(style="ultra")
-    tech = meaning.get("technical", "")
-    definitions_list = meaning.get("definitions", list())
-    definitions = "".join(definitions_list)
-    used_in = f'Used in: {meaning.get("used_in", "")}'
-
-    res_text = "<br>".join([name, tech, definitions, used_in])
-    return jsonify(result=res_text)
-
+    result = Word.html_all_by_name(word, style="normal")
+    return jsonify(result=result)

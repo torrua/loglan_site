@@ -1,1 +1,1 @@
-# 🌎 Loglan Dictionary Online Site
+# 🌎 Loglan Online Dictionary Site
