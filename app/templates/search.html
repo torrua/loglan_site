@@ -9,12 +9,15 @@
 		font-size: 24px;
 		font-weight: bold;
 	}
-	w, .word {
-		margin-top: 20px;
+	.word_data {
+		margin-top: 15px;
 	}
 	wl, .word_line {
 		font-weight: bold;
 		display: block;
+	}
+	.w_name{
+		font-weight: bold;
 	}
 	m, d, w, us {
 		display: block;
@@ -29,17 +32,18 @@
 		color: #007F00;
 		font-style: italic;
 	}
-	o, .m_origin {
+	o, .m_origin, .w_origin {
 		color: #007F00;
 		font-style: italic;
 	}
-	d, .definition {
-		margin-left: 20px;
+	dl, de, .definition {
 		margin-top: 5px;
-
 		text-align: justify;
 		max-width: 90%;
 		min-width: 400px;
+	}
+	dl, .definition.log {
+		margin-left: 20px;
 	}
 	du, .du {
 		font-weight: bold;
@@ -65,7 +69,6 @@
         <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="word">
       </form>
     </div>
-
     <div class="container word_data">
         <span id="word_data"></span>
     </div>

@@ -31,4 +31,6 @@ def how_to_read():
 def get_loglan_word():
     word = request.form.get("word", "", type=str)
     result = Word.html_all_by_name(word, style="normal")
+    if not result:
+        result = Word.translation_by_key(word, style="normal")
     return jsonify(result=result)
