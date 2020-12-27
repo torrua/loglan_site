@@ -17,9 +17,9 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/search")
+@app.route("/dictionary")
 def search():
-    return render_template("search.html")
+    return render_template("dictionary.html")
 
 
 @app.route("/how_to_read")
