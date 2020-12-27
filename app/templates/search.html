@@ -67,19 +67,23 @@
 	input.search-bar {
 		font-weight: bold;
 	}
+	.form-control:focus {
+	  border-color: #919191;
+	  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 0, 0, 0.6);
+	}
 {% endblock %}
 
 {% block content %}
 
     <div class="container search">
       <form id="search" class="d-flex">
-		  <input class="form-control search-bar" type="search" placeholder="Search" aria-label="Search" name="word">
+		  <input class="form-control search-bar" type="search" placeholder="Search" autocomplete="off" aria-label="Search" name="word">
 		  <div class="btn-group" role="group">
 			<input type="radio" class="btn-check" name="search_lang" id="log" value="log" autocomplete="off" onclick="this.blur();" checked>
 			<label class="btn btn-outline-secondary custom-btn" for="log">L</label>
 			<input type="radio" class="btn-check" name="search_lang" id="eng" value="eng" autocomplete="off" onclick="this.blur();">
 			<label class="btn btn-outline-secondary custom-btn" for="eng">E</label>
-		</div>
+		  </div>
       </form>
     </div>
     <div class="container word_data">

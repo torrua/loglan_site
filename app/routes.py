@@ -33,13 +33,23 @@ def get_loglan_word():
     word = request.form.get("word", "", type=str)
 
     if not word:
-        return None
+        return jsonify(result="<div></div>")
+
+    nothing = """
+<div class="alert alert-secondary" role="alert" style="text-align: center;">
+  %s
+</div>
+    """
 
     if search_language == "log":
         result = Word.html_all_by_name(word, style="normal")
+        if not result:
+            result = nothing % f"There is no word <b>{word}</b> in Loglan. Try switching to English."
     elif search_language == "eng":
         result = Word.translation_by_key(word, style="normal")
+        if not result:
+            result = nothing % f"There is no word <b>{word}</b> in English. Try switching to Loglan."
     else:
-        result = None
+        result = nothing % f"Sorry, but nothing was found for <b>{word}</b>."
 
     return jsonify(result=result)
