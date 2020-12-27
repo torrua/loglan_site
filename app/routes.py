@@ -29,8 +29,17 @@ def how_to_read():
 
 @app.route("/get_loglan_word", methods=["POST"])
 def get_loglan_word():
+    search_language = request.form.getlist('search_lang')[0]
     word = request.form.get("word", "", type=str)
-    result = Word.html_all_by_name(word, style="normal")
-    if not result:
+
+    if not word:
+        return None
+
+    if search_language == "log":
+        result = Word.html_all_by_name(word, style="normal")
+    elif search_language == "eng":
         result = Word.translation_by_key(word, style="normal")
+    else:
+        result = None
+
     return jsonify(result=result)

@@ -9,8 +9,12 @@
 		font-size: 24px;
 		font-weight: bold;
 	}
-	.word_data {
-		margin-top: 15px;
+	.btn-group {
+		margin-left: 10px;
+	}
+	.btn-outline-secondary.custom-btn {
+		border-color: #ced4da;
+		color: #ced4da;
 	}
 	wl, .word_line {
 		font-weight: bold;
@@ -66,11 +70,17 @@
 
     <div class="container search">
       <form id="search" class="d-flex">
-        <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="word">
+		  <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="word">
+		  <div class="btn-group" role="group">
+			<input type="radio" class="btn-check" name="search_lang" id="log" value="log" autocomplete="off" onclick="this.blur();" checked>
+			<label class="btn btn-outline-secondary custom-btn" for="log">L</label>
+			<input type="radio" class="btn-check" name="search_lang" id="eng" value="eng" autocomplete="off" onclick="this.blur();">
+			<label class="btn btn-outline-secondary custom-btn" for="eng">E</label>
+		</div>
       </form>
     </div>
     <div class="container word_data">
-        <span id="word_data"></span>
+		<span id="word_data"></span>
     </div>
 
   <script>
