@@ -23,6 +23,11 @@ def index(js):
 """
 
 
+@app.route("/articles")
+def articles():
+    return render_template("articles.html")
+
+
 @app.route("/")
 @app.route("/home")
 def home():
