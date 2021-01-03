@@ -24,13 +24,6 @@
     .header {
       text-align: center;
     }
-    .search {
-      padding-top: 10px;
-    }
-    .word_data  {
-      padding-top: 15px;
-      padding-bottom: 45px;
-    }
     .content {
       flex: 1 0 auto;
     }
@@ -46,9 +39,9 @@
       </button>
 
       <div class="collapse navbar-collapse navbar-nav justify-content-center" id="navbarNavAltMarkup">
-        <a class="nav-link" href="/">Home</a>
-        <a class="nav-link" href="/dictionary">Dictionary</a>
-        <a class="nav-link" href="/how_to_read">How To Read</a>
+        <a class="nav-link" href="{{url_for('home')}}">Home</a>
+        <a class="nav-link" href="{{url_for('dictionary')}}">Dictionary</a>
+        <a class="nav-link" href="{{url_for('how_to_read')}}">How To Read</a>
       </div>
     </nav>
     <div class="content">

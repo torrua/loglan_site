@@ -9,19 +9,15 @@
 		font-size: 24px;
 		font-weight: bold;
 	}
-	.btn-group {
-		margin-left: 10px;
-	}
-	.btn-outline-secondary.custom-btn {
-		border-color: #ced4da;
-		color: #ced4da;
-	}
 	wl, .word_line {
 		font-weight: bold;
 		display: block;
 	}
 	.w_name{
 		font-weight: bold;
+	}
+	ws, .words > *:not(:first-child) {
+		margin-top: 20px;
 	}
 	m, d, w, us {
 		display: block;
@@ -64,6 +60,22 @@
 		color: #C70039;
 		font-weight: bold;
 	}
+
+    .search {
+      padding-top: 10px;
+    }
+    .word_data  {
+      padding-top: 20px;
+      padding-bottom: 45px;
+    }
+
+	.language-selector {
+		margin-left: 10px;
+	}
+	.btn-outline-secondary.custom-btn {
+		border-color: #ced4da;
+		color: #ced4da;
+	}
 	input.search-bar {
 		font-weight: bold;
 	}
@@ -71,41 +83,93 @@
 	  border-color: #919191;
 	  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 0, 0, 0.6);
 	}
+	.search-settings {
+		margin-left: 10px;
+	}
+	.settings-bar {
+		margin-top: 10px;
+	}
+	.btn-settings {
+		margin-left: 10px;
+	}
 {% endblock %}
 
 {% block content %}
-
-    <div class="container search">
-      <form id="search" class="d-flex">
-		  <input class="form-control search-bar" type="search" placeholder="Search" autocomplete="off" aria-label="Search" name="word">
-		  <div class="btn-group" role="group">
+<div class="container search">
+  	<form id="search" class="d-flex">
+		<input class="form-control search-bar" type="search" placeholder="Search" autocomplete="off" aria-label="Search" name="word">
+		<div class="btn-group language-selector" role="group">
 			<input type="radio" class="btn-check" name="search_lang" id="log" value="log" autocomplete="off" onclick="this.blur();" checked>
 			<label class="btn btn-outline-secondary custom-btn" for="log">L</label>
 			<input type="radio" class="btn-check" name="search_lang" id="eng" value="eng" autocomplete="off" onclick="this.blur();">
 			<label class="btn btn-outline-secondary custom-btn" for="eng">E</label>
-		  </div>
-      </form>
-    </div>
-    <div class="container word_data">
-		<span id="word_data"></span>
-    </div>
+		</div>
+		<input type="checkbox" class="btn-check" id="btn-check-2-outlined" autocomplete="off" onclick="this.blur();"
+			   data-bs-toggle="collapse" data-bs-target="#collapse_settings" aria-expanded="false" aria-controls="collapse_settings">
+		<label class="btn btn-outline-secondary custom-btn btn-settings" for="btn-check-2-outlined">⚙</label><br>
+	</form>
 
-  <script>
+	<div class="collapse settings-bar" id="collapse_settings">
+		<div class="card card-body">
+			<div class="row g-3">
+				<div class="col-9">
+					<form id="settings" class="search-settings">
+						<div class="form-check form-check-inline">
+						  <input class="form-check-input" type="checkbox" id="check_case_sensitive" value="option1">
+						  <label class="form-check-label" for="check_case_sensitive">Case sensitive</label>
+						</div>
+						<div class="form-check form-check-inline">
+						  <input class="form-check-input" type="checkbox" id="check_partial_results" value="option2">
+						  <label class="form-check-label" for="check_partial_results">Partial Results</label>
+						</div>
+					</form>
+				</div>
+				<div class="col-3">
+					<select class="form-select form-select-sm" aria-label=".form-select-sm" id="event_selector">
+						{% for id, name in events.items() %}
+						<option name="eid" value="{{ id }}">{{ name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container word_data">
+	<span id="word_data"></span>
+</div>
+
+<script>
     function addSubmit(ev) {
-      ev.preventDefault();
-      var request = new XMLHttpRequest();
-      request.addEventListener('load', addShow);
-      request.open('POST', {{ url_for('get_loglan_word')|tojson }});
-      request.send(new FormData(this));
+
+		ev.preventDefault();
+		var request = new XMLHttpRequest();
+		request.addEventListener('load', addShow);
+		request.open('POST', {{ url_for('submit_search')|tojson }});
+
+		var formData = new FormData(document.getElementById('search'));
+
+		var current_event_id = document.getElementById('event_selector').value
+		formData.append('current_event_id', current_event_id);
+
+		var case_sensitive = document.getElementById('check_case_sensitive').checked
+		formData.append('case_sensitive', case_sensitive);
+
+		var partial_results = document.getElementById('check_partial_results').checked
+		formData.append('partial_results', partial_results);
+
+		request.send(formData);
+		console.log(request.response);
     }
 
     function addShow() {
-      var data = JSON.parse(this.responseText);
-      var span = document.getElementById('word_data');
-      span.innerHTML = data.result;
+    	var data = JSON.parse(this.responseText);
+    	var span = document.getElementById('word_data');
+    	span.innerHTML = data.result;
     }
 
     var form = document.getElementById('search');
     form.addEventListener('submit', addSubmit);
-  </script>
+</script>
 {% endblock %}
