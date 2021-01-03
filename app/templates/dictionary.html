@@ -142,8 +142,11 @@
 
 <script>
     function addSubmit(ev) {
-
 		ev.preventDefault();
+		subAddSubmit();
+    }
+
+	function subAddSubmit() {
 		var request = new XMLHttpRequest();
 		request.addEventListener('load', addShow);
 		request.open('POST', {{ url_for('submit_search')|tojson }});
@@ -161,7 +164,7 @@
 
 		request.send(formData);
 		console.log(request.response);
-    }
+	}
 
     function addShow() {
     	var data = JSON.parse(this.responseText);
@@ -175,11 +178,13 @@
     function onClickLogBtn() {
     	this.blur();
     	document.getElementById("check_partial_results").removeAttribute('disabled');
+    	subAddSubmit();
     }
 
     function onClickEngBtn() {
     	this.blur();
     	document.getElementById("check_partial_results").setAttribute('disabled', 'disabled');
+    	subAddSubmit();
     }
 
     var log_button = document.getElementById('log');
