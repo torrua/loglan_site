@@ -99,9 +99,9 @@
   	<form id="search" class="d-flex">
 		<input class="form-control search-bar" type="search" placeholder="Search" autocomplete="off" aria-label="Search" name="word">
 		<div class="btn-group language-selector" role="group">
-			<input type="radio" class="btn-check" name="search_lang" id="log" value="log" autocomplete="off" onclick="this.blur();" checked>
+			<input type="radio" class="btn-check" name="search_lang" id="log" value="log" autocomplete="off" checked>
 			<label class="btn btn-outline-secondary custom-btn" for="log">L</label>
-			<input type="radio" class="btn-check" name="search_lang" id="eng" value="eng" autocomplete="off" onclick="this.blur();">
+			<input type="radio" class="btn-check" name="search_lang" id="eng" value="eng" autocomplete="off">
 			<label class="btn btn-outline-secondary custom-btn" for="eng">E</label>
 		</div>
 		<input type="checkbox" class="btn-check" id="btn-check-2-outlined" autocomplete="off" onclick="this.blur();"
@@ -171,5 +171,22 @@
 
     var form = document.getElementById('search');
     form.addEventListener('submit', addSubmit);
+
+    function onClickLogBtn() {
+    	this.blur();
+    	document.getElementById("check_partial_results").removeAttribute('disabled');
+    }
+
+    function onClickEngBtn() {
+    	this.blur();
+    	document.getElementById("check_partial_results").setAttribute('disabled', 'disabled');
+    }
+
+    var log_button = document.getElementById('log');
+    log_button.addEventListener('click', onClickLogBtn);
+
+    var eng_button = document.getElementById('eng');
+    eng_button.addEventListener('click', onClickEngBtn);
+
 </script>
 {% endblock %}
