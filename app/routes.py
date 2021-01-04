@@ -31,6 +31,18 @@ def articles():
     return render_template("articles.html", articles=content)
 
 
+@app.route('/Articles/<variable>', methods=['GET', 'POST'])
+def daily_post(variable):
+    url = f"http://www.loglan.org/Articles/{variable}"
+    content = get_data(url)["content"].body
+
+    for bq in content.findAll("blockquote"):
+        bq['class'] = "blockquote"
+
+    name_of_article = content.h1.extract().get_text()
+    return render_template("article.html", name_of_article=name_of_article, article=content)
+
+
 @app.route("/")
 @app.route("/home")
 def home():
