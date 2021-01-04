@@ -11,6 +11,7 @@ from loglan_db.model import Event
 from loglan_db.model_html import HTMLExportWord as Word
 
 from app import app
+from functions import get_data
 
 DEFAULT_SEARCH_LANGUAGE = os.getenv("DEFAULT_SEARCH_LANGUAGE", "log")
 DEFAULT_HTML_STYLE = os.getenv("DEFAULT_HTML_STYLE", "normal")
@@ -25,7 +26,9 @@ def index(js):
 
 @app.route("/articles")
 def articles():
-    return render_template("articles.html")
+    article_block = get_data("http://www.loglan.org/")["content"]
+    content = article_block.find("a", attrs={"name": "articles"}).find_parent('h2').find_next("ol")
+    return render_template("articles.html", articles=content)
 
 
 @app.route("/")

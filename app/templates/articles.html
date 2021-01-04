@@ -5,9 +5,16 @@
 {% endblock %}
 
 {% block style %}
-<div></div>
+    .articles-items {
+        margin-top: 10px;
+    }
 {% endblock %}
 
 {% block content %}
-<div class="container"></div>
+<div class="container">
+    <div class="container body-content" style="margin-top: 15px; margin-bottom: 20px;">
+        <h2 align="center">Loglan Articles</h2><br>
+        <div class="articles-items">{{ articles|safe }}</div>
+    </div>
+</div>
 {% endblock %}
