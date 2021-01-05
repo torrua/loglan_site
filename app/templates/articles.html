@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Articles
+    {{ title }}
 {% endblock %}
 
 {% block style %}
@@ -13,7 +13,7 @@
 {% block content %}
 <div class="container">
     <div class="container body-content" style="margin-top: 15px; margin-bottom: 20px;">
-        <h2 align="center">Loglan Articles</h2><br>
+        <h2 align="center">Loglan {{ title }}</h2><br>
         <div class="articles-items">{{ articles|safe }}</div>
     </div>
 </div>

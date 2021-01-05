@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Article - {{ name_of_article }}
+    {{ title }} - {{ name_of_article }}
 {% endblock %}
 
 {% block style %}
@@ -33,7 +33,7 @@
 {% block content %}
 <div class="container">
     <div class="container body-content" style="margin-top: 15px; margin-bottom: 20px;">
-        <h2 align="center"><a href="javascript:history.back()" style="text-decoration: none;">← </a>{{ name_of_article }}</h2><br>
+        <h2 align="center"><a href="./" style="text-decoration: none;">← </a>{{ name_of_article }}</h2><br>
         <div class="article-body">{{ article|safe }}</div>
     </div>
 </div>

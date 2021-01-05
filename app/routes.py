@@ -6,7 +6,7 @@ App's routes module
 import distutils.util
 import os
 
-from flask import jsonify, render_template, request
+from flask import jsonify, render_template, request, redirect, url_for
 from loglan_db.model import Event
 from loglan_db.model_html import HTMLExportWord as Word
 
@@ -24,15 +24,32 @@ def index(js):
 """
 
 
+@app.route('/Articles/')
+def redirect_articles():
+    return redirect(url_for('articles'))
+
+
+@app.route('/Texts/')
+def redirect_texts():
+    return redirect(url_for('texts'))
+
+
 @app.route("/articles")
 def articles():
     article_block = get_data("http://www.loglan.org/")["content"]
     content = article_block.find("a", attrs={"name": "articles"}).find_parent('h2').find_next("ol")
-    return render_template("articles.html", articles=content)
+    return render_template("articles.html", articles=content, title="Articles")
+
+
+@app.route("/texts")
+def texts():
+    article_block = get_data("http://www.loglan.org/")["content"]
+    content = article_block.find("a", attrs={"name": "texts"}).find_parent('h2').find_next("ol")
+    return render_template("articles.html", articles=content, title="Texts")
 
 
 @app.route('/Articles/<variable>', methods=['GET', 'POST'])
-def daily_post(variable):
+def article(variable):
     url = f"http://www.loglan.org/Articles/{variable}"
     content = get_data(url)["content"].body
 
@@ -40,7 +57,19 @@ def daily_post(variable):
         bq['class'] = "blockquote"
 
     name_of_article = content.h1.extract().get_text()
-    return render_template("article.html", name_of_article=name_of_article, article=content)
+    return render_template("article.html", name_of_article=name_of_article, article=content, title="Article")
+
+
+@app.route('/Texts/<variable>', methods=['GET', 'POST'])
+def text(variable):
+    url = f"http://www.loglan.org/Texts/{variable}"
+    content = get_data(url)["content"].body
+
+    for bq in content.findAll("blockquote"):
+        bq['class'] = "blockquote"
+
+    name_of_article = content.h1.extract().get_text()
+    return render_template("article.html", name_of_article=name_of_article, article=content, title="Text")
 
 
 @app.route("/")
