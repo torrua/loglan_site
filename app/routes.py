@@ -35,57 +35,50 @@ def redirect_texts():
     return redirect(url_for('texts'))
 
 
+@app.route('/Sanpa/')
+@app.route('/Lodtua/')
+def redirect_columns():
+    return redirect(url_for('columns'))
+
+
 @app.route("/articles")
 def articles():
-    article_block = get_data("http://www.loglan.org/")["content"]
-    content = article_block.find("a", attrs={"name": "articles"}).find_parent('h2').find_next("ol")
-    return render_template("articles.html", articles=content, title="Articles")
+    article_block = get_data(main_site)["content"]
+    title = article_block.find("a", attrs={"name": "articles"}).find_parent('h2')
+    content = title.find_next("ol")
+    return render_template("articles.html", articles=content, title=title.get_text())
 
 
 @app.route("/texts")
 def texts():
-    section = "Texts/"
-
     article_block = get_data(main_site)["content"]
-    content = article_block.find("a", attrs={"name": "texts"}).find_parent('h2').find_next("ol")
-
-    for img in content.findAll("img"):
-        img['src'] = main_site + section + img['src']
-
-    return render_template("articles.html", articles=content, title="Texts")
+    title = article_block.find("a", attrs={"name": "texts"}).find_parent('h2')
+    content = title.find_next("ol")
+    return render_template("articles.html", articles=content, title=title.get_text())
 
 
-@app.route('/Articles/<variable>', methods=['GET', 'POST'])
-def article(variable):
-    section = "Articles/"
-    url = f"{main_site}{section}{variable}"
+@app.route("/columns")
+def columns():
+    article_block = get_data(main_site)["content"]
+    title = article_block.find("a", attrs={"name": "columns"}).find_parent('h2')
+    content = title.find_next("ul")
+    return render_template("articles.html", articles=content, title=title.get_text())
+
+
+@app.route('/<section>/<article>', methods=['GET', 'POST'])
+def test(section, article):
+    url = f"{main_site}{section}/{article}"
     content = get_data(url)["content"].body
 
     for bq in content.findAll("blockquote"):
         bq['class'] = "blockquote"
 
     for img in content.findAll("img"):
+        # del(img["alt"])
         img['src'] = main_site + section + img['src']
 
     name_of_article = content.h1.extract().get_text()
-    return render_template("article.html", name_of_article=name_of_article, article=content, title="Article")
-
-
-@app.route('/Texts/<variable>', methods=['GET', 'POST'])
-def text(variable):
-    section = "Texts/"
-
-    url = f"{main_site}{section}{variable}"
-    content = get_data(url)["content"].body
-
-    for bq in content.findAll("blockquote"):
-        bq['class'] = "blockquote"
-
-    for img in content.findAll("img"):
-        img['src'] = main_site + section + img['src']
-
-    name_of_article = content.h1.extract().get_text()
-    return render_template("article.html", name_of_article=name_of_article, article=content, title="Text")
+    return render_template("article.html", name_of_article=name_of_article, article=content, title=section)
 
 
 @app.route("/")
