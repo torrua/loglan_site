@@ -15,6 +15,7 @@ from functions import get_data
 
 DEFAULT_SEARCH_LANGUAGE = os.getenv("DEFAULT_SEARCH_LANGUAGE", "log")
 DEFAULT_HTML_STYLE = os.getenv("DEFAULT_HTML_STYLE", "normal")
+main_site = "http://www.loglan.org/"
 
 """
 @app.route("/", defaults={"js": "plain"})
@@ -43,18 +44,28 @@ def articles():
 
 @app.route("/texts")
 def texts():
-    article_block = get_data("http://www.loglan.org/")["content"]
+    section = "Texts/"
+
+    article_block = get_data(main_site)["content"]
     content = article_block.find("a", attrs={"name": "texts"}).find_parent('h2').find_next("ol")
+
+    for img in content.findAll("img"):
+        img['src'] = main_site + section + img['src']
+
     return render_template("articles.html", articles=content, title="Texts")
 
 
 @app.route('/Articles/<variable>', methods=['GET', 'POST'])
 def article(variable):
-    url = f"http://www.loglan.org/Articles/{variable}"
+    section = "Articles/"
+    url = f"{main_site}{section}{variable}"
     content = get_data(url)["content"].body
 
     for bq in content.findAll("blockquote"):
         bq['class'] = "blockquote"
+
+    for img in content.findAll("img"):
+        img['src'] = main_site + section + img['src']
 
     name_of_article = content.h1.extract().get_text()
     return render_template("article.html", name_of_article=name_of_article, article=content, title="Article")
@@ -62,11 +73,16 @@ def article(variable):
 
 @app.route('/Texts/<variable>', methods=['GET', 'POST'])
 def text(variable):
-    url = f"http://www.loglan.org/Texts/{variable}"
+    section = "Texts/"
+
+    url = f"{main_site}{section}{variable}"
     content = get_data(url)["content"].body
 
     for bq in content.findAll("blockquote"):
         bq['class'] = "blockquote"
+
+    for img in content.findAll("img"):
+        img['src'] = main_site + section + img['src']
 
     name_of_article = content.h1.extract().get_text()
     return render_template("article.html", name_of_article=name_of_article, article=content, title="Text")
