@@ -41,6 +41,19 @@ def redirect_columns():
     return redirect(url_for('columns'))
 
 
+@app.route("/")
+@app.route("/home")
+def home():
+    article = get_data(main_site)["content"].body.find("div", attrs={"id": "content"})
+    for bq in article.findAll("blockquote"):
+        bq['class'] = "blockquote"
+
+    for img in article.findAll("img"):
+        # del(img["alt"])
+        img['src'] = main_site + img['src']
+    return render_template("home.html", article="")
+
+
 @app.route("/articles")
 def articles():
     article_block = get_data(main_site)["content"]
@@ -63,28 +76,6 @@ def columns():
     title = article_block.find("a", attrs={"name": "columns"}).find_parent('h2')
     content = title.find_next("ul")
     return render_template("articles.html", articles=content, title=title.get_text())
-
-
-@app.route('/<section>/<article>', methods=['GET', 'POST'])
-def test(section, article):
-    url = f"{main_site}{section}/{article}"
-    content = get_data(url)["content"].body
-
-    for bq in content.findAll("blockquote"):
-        bq['class'] = "blockquote"
-
-    for img in content.findAll("img"):
-        # del(img["alt"])
-        img['src'] = main_site + section + img['src']
-
-    name_of_article = content.h1.extract().get_text()
-    return render_template("article.html", name_of_article=name_of_article, article=content, title=section)
-
-
-@app.route("/")
-@app.route("/home")
-def home():
-    return render_template("home.html")
 
 
 @app.route("/dictionary")
@@ -135,3 +126,20 @@ def submit_search():
         result = nothing % f"Sorry, but nothing was found for <b>{word}</b>."
 
     return jsonify(result=result)
+
+
+@app.route('/<string:section>/', methods=['GET', 'POST'])
+@app.route('/<string:section>/<string:article>', methods=['GET', 'POST'])
+def test(section: str = "", article: str = ""):
+    url = f"{main_site}{section}/{article}"
+    content = get_data(url)["content"].body
+
+    for bq in content.findAll("blockquote"):
+        bq['class'] = "blockquote"
+
+    for img in content.findAll("img"):
+        # del(img["alt"])
+        img['src'] = main_site + section + "/" + img['src']
+
+    name_of_article = content.h1.extract().get_text()
+    return render_template("article.html", name_of_article=name_of_article, article=content, title=section)
