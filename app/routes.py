@@ -8,7 +8,7 @@ import os
 
 from flask import jsonify, render_template, request, redirect, url_for
 from loglan_db.model import Event
-from loglan_db.model_html import HTMLExportWord as Word
+from loglan_db.model_html.html_word import HTMLExportWord as Word
 
 from app import app
 from functions import get_data
@@ -118,7 +118,7 @@ def submit_search():
                                f"{' or disable Case sensitive search' if is_case_sensitive else ''}."
 
     elif search_language == "eng":
-        result = Word.translation_by_key(word, style=DEFAULT_HTML_STYLE)
+        result = Word.translation_by_key(word, style=DEFAULT_HTML_STYLE, case_sensitive=is_case_sensitive)
         if not result:
             result = nothing % f"There is no word <b>{word}</b> in English. Try switching to Loglan" \
                                f"{' or disable Case sensitive search' if is_case_sensitive else ''}."
