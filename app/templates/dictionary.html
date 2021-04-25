@@ -175,15 +175,8 @@
     var form = document.getElementById('search');
     form.addEventListener('submit', addSubmit);
 
-    function onClickLogBtn() {
+    function onClickBtn() {
     	this.blur();
-    	document.getElementById("check_partial_results").removeAttribute('disabled');
-    	subAddSubmit();
-    }
-
-    function onClickEngBtn() {
-    	this.blur();
-    	document.getElementById("check_partial_results").setAttribute('disabled', 'disabled');
     	subAddSubmit();
     }
 
@@ -191,7 +184,7 @@
     log_button.addEventListener('click', onClickLogBtn);
 
     var eng_button = document.getElementById('eng');
-    eng_button.addEventListener('click', onClickEngBtn);
+    eng_button.addEventListener('click', onClickBtn);
 
 </script>
 {% endblock %}

@@ -118,7 +118,11 @@ def submit_search():
                                f"{' or disable Case sensitive search' if is_case_sensitive else ''}."
 
     elif search_language == "eng":
-        result = Word.translation_by_key(word, style=DEFAULT_HTML_STYLE, case_sensitive=is_case_sensitive)
+        result = Word.translation_by_key(
+            key=word, style=DEFAULT_HTML_STYLE,
+            case_sensitive=is_case_sensitive,
+            partial_results=is_partial_results)
+
         if not result:
             result = nothing % f"There is no word <b>{word}</b> in English. Try switching to Loglan" \
                                f"{' or disable Case sensitive search' if is_case_sensitive else ''}."
