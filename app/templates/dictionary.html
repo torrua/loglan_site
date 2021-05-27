@@ -92,13 +92,16 @@
 	.btn-settings {
 		margin-left: 10px;
 	}
+	a.m_cpx {
+		text-decoration: none;
+	}
 {% endblock %}
 
 {% block content %}
 <div class="container search">
   	<form id="search" class="d-flex">
-		<input class="form-control search-bar" type="search" placeholder="Search" autocomplete="off" aria-label="Search" name="word">
-		<div class="btn-group language-selector" role="group">
+		<input class="form-control search-bar" type="search" placeholder="Search" autocomplete="off" aria-label="Search" name="word" id="search_field">
+		<div class="btn-group language-selector" role="group" id="language-selector">
 			<input type="radio" class="btn-check" name="search_lang" id="log" value="log" autocomplete="off" checked>
 			<label class="btn btn-outline-secondary custom-btn" for="log">L</label>
 			<input type="radio" class="btn-check" name="search_lang" id="eng" value="eng" autocomplete="off">
@@ -137,47 +140,101 @@
 </div>
 
 <script>
+
+	window.onpopstate = function(e){
+		if(e.state) {
+			restoreState(e.state);
+			addListenersToCpx();
+		}
+	};
+
+	function restoreState(data) {
+		// Restore page state and settings from data dictionary
+		document.getElementById('word_data').innerHTML = data.html
+		document.getElementById('search_field').value = data.word
+		document.getElementById('event_selector').selectedIndex = data.esi
+		document.getElementById(data.language_id).checked = true
+		document.getElementById("check_case_sensitive").checked = data.case_sensitive
+	}
+
+	function collectState() {
+		// Collect page state and settings to data dictionary
+		var current_state = {
+			'case_sensitive': document.getElementById('check_case_sensitive').checked,
+			'esi': document.getElementById('event_selector').selectedIndex,
+			'event_id': document.getElementById('event_selector').value,
+			'language_id': document.querySelector('.btn-check:checked').value,
+			'word': document.getElementById('search_field').value,
+		}
+		return current_state
+	}
+
+	function send_request(data) {
+		var request = new XMLHttpRequest()
+		request.addEventListener('load', addShow)
+		request.open('POST', {{ url_for('submit_search')|tojson }})
+
+		var form_data = new FormData()
+		for ( var key in data ) { form_data.append(key, data[key])}
+		request.send(form_data)
+	}
+
+	addListenersToCpx();
+
+	function subAddSubmit() {
+		var current_state = collectState()
+		send_request(current_state);
+	}
+
+    function addShow() {
+    	// this action runs after pressing the submit button
+    	var data = JSON.parse(this.responseText);
+    	var span = document.getElementById('word_data');
+    	span.innerHTML = data.result;
+
+		addListenersToCpx();
+
+		var current_state = collectState()
+		current_state['html'] = data.result
+    	window.history.pushState(current_state, "", "");
+    }
+
+	function addListenersToCpx() {
+		var elements = document.getElementsByClassName("m_cpx");
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].addEventListener('click', pressDjifoa);
+		}
+	}
+
     function addSubmit(ev) {
 		ev.preventDefault();
 		subAddSubmit();
     }
-
-	function subAddSubmit() {
-		var request = new XMLHttpRequest();
-		request.addEventListener('load', addShow);
-		request.open('POST', {{ url_for('submit_search')|tojson }});
-
-		var formData = new FormData(document.getElementById('search'));
-
-		var current_event_id = document.getElementById('event_selector').value
-		formData.append('current_event_id', current_event_id);
-
-		var case_sensitive = document.getElementById('check_case_sensitive').checked
-		formData.append('case_sensitive', case_sensitive);
-
-		request.send(formData);
-		console.log(request.response);
-	}
-
-    function addShow() {
-    	var data = JSON.parse(this.responseText);
-    	var span = document.getElementById('word_data');
-    	span.innerHTML = data.result;
-    }
-
-    var form = document.getElementById('search');
-    form.addEventListener('submit', addSubmit);
 
     function onClickBtn() {
     	this.blur();
     	subAddSubmit();
     }
 
+	var pressDjifoa = function() {
+		document.getElementById('search_field').value = this.innerText
+		subAddSubmit();
+	};
+
+    var form = document.getElementById('search');
+    form.addEventListener('submit', addSubmit);
+
     var log_button = document.getElementById('log');
-    log_button.addEventListener('click', onClickLogBtn);
+    log_button.addEventListener('click', onClickBtn);
 
     var eng_button = document.getElementById('eng');
     eng_button.addEventListener('click', onClickBtn);
+
+	var case_box = document.getElementById('check_case_sensitive');
+    case_box.addEventListener('click', subAddSubmit);
+
+	var event_selector = document.getElementById('event_selector');
+    event_selector.addEventListener('change', subAddSubmit);
 
 </script>
 {% endblock %}

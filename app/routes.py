@@ -91,9 +91,9 @@ def how_to_read():
 
 @app.route("/submit_search", methods=["POST"])
 def submit_search():
-    search_language = request.form.get('search_lang', DEFAULT_SEARCH_LANGUAGE)
+    search_language = request.form.get('language_id', DEFAULT_SEARCH_LANGUAGE)
     word = request.form.get("word", "")
-    current_event_id = request.form.get("current_event_id", Event.latest().id)
+    event_id = request.form.get("event_id", Event.latest().id)
     is_case_sensitive = bool(distutils.util.strtobool(request.form.get("case_sensitive", False)))
 
     if not word:
@@ -108,7 +108,7 @@ def submit_search():
     if search_language == "log":
         result = Word.html_all_by_name(
             name=word, style=DEFAULT_HTML_STYLE,
-            event_id=current_event_id,
+            event_id=event_id,
             case_sensitive=is_case_sensitive)
 
         if not result:
@@ -118,7 +118,7 @@ def submit_search():
     elif search_language == "eng":
         result = Word.translation_by_key(
             key=word, style=DEFAULT_HTML_STYLE,
-            event_id=current_event_id,
+            event_id=event_id,
             case_sensitive=is_case_sensitive)
 
         if not result:
