@@ -109,10 +109,11 @@
 			<label class="btn btn-outline-secondary custom-btn" for="eng" title="Switch To English">E</label>
 		</div>
 		<div class="btn-group settings-selector" role="group" id="settings-selector">
-		<input type="checkbox" class="btn-check" id="btn-check-2-outlined" autocomplete="off" onclick="this.blur();"
-			   data-bs-toggle="collapse" data-bs-target="#collapse_settings" aria-expanded="false" aria-controls="collapse_settings">
+			<input type="checkbox" class="btn-check" id="btn-check-2-outlined" autocomplete="off" onclick="this.blur();"
+				data-bs-toggle="collapse" data-bs-target="#collapse_settings" aria-expanded="false" aria-controls="collapse_settings">
 			<label class="btn btn-outline-secondary custom-btn btn-settings" for="btn-check-2-outlined" title="Settings">⚙</label>
-		<a href="{{url_for('how_to_read')}}" class="btn btn-outline-secondary custom-btn" role="button" title="How To Read">&#8239;?&#8239;</a></div><br>
+			<a href="{{url_for('how_to_read')}}" class="btn btn-outline-secondary custom-btn" style="outline: none; box-shadow: none;"
+		   		role="button" title="How To Read">&#8239;?&#8239;</a></div><br>
 	</form>
 
 	<div class="collapse settings-bar" id="collapse_settings">
