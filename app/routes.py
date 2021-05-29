@@ -51,6 +51,7 @@ def home():
     for img in article.findAll("img"):
         # del(img["alt"])
         img['src'] = main_site + img['src']
+
     return render_template("home.html", article="")
 
 
@@ -132,7 +133,7 @@ def submit_search():
 
 @app.route('/<string:section>/', methods=['GET', 'POST'])
 @app.route('/<string:section>/<string:article>', methods=['GET', 'POST'])
-def test(section: str = "", article: str = ""):
+def proxy(section: str = "", article: str = ""):
     url = f"{main_site}{section}/{article}"
     content = get_data(url)["content"].body
 
