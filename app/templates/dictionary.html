@@ -145,16 +145,33 @@
 
 <script>
 
-	window.onpopstate = function(e){
-		if(e.state) {
-			restoreState(e.state);
-			addListenersToCpx();
-		}
-	};
+    var form = document.getElementById('search');
+    form.addEventListener('submit', addSubmit);
+
+    var log_button = document.getElementById('log');
+    log_button.addEventListener('click', onClickBtn);
+
+    var eng_button = document.getElementById('eng');
+    eng_button.addEventListener('click', onClickBtn);
+
+	var case_box = document.getElementById('check_case_sensitive');
+    case_box.addEventListener('click', subAddSubmit);
+
+	var event_selector = document.getElementById('event_selector');
+    event_selector.addEventListener('change', subAddSubmit);
+
+	window.onpopstate = function(e) { if(e.state) { restoreState(e.state); } };
+
+	loadDefault();
 
 	function restoreState(data) {
 		// Restore page state and settings from data dictionary
 		document.getElementById('word_data').innerHTML = data.html
+		restoreSettings(data)
+		addListenersToCpx()
+	}
+
+	function restoreSettings(data) {
 		document.getElementById('search_field').value = data.word
 		document.getElementById('event_selector').selectedIndex = data.esi
 		document.getElementById(data.language_id).checked = true
@@ -173,9 +190,9 @@
 		return current_state
 	}
 
-	function send_request(data) {
+	function sendRequest(data, listener) {
 		var request = new XMLHttpRequest()
-		request.addEventListener('load', addShow)
+		request.addEventListener('load', listener)
 		request.open('POST', {{ url_for('submit_search')|tojson }})
 
 		var form_data = new FormData()
@@ -183,24 +200,23 @@
 		request.send(form_data)
 	}
 
-	addListenersToCpx();
-
 	function subAddSubmit() {
 		var current_state = collectState()
-		send_request(current_state);
+		sendRequest(current_state, applyResponse);
 	}
 
-    function addShow() {
+    function applyResponse() {
     	// this action runs after pressing the submit button
     	var data = JSON.parse(this.responseText);
     	var span = document.getElementById('word_data');
     	span.innerHTML = data.result;
-
 		addListenersToCpx();
 
 		var current_state = collectState()
+		var params = new URLSearchParams(current_state).toString();
+
 		current_state['html'] = data.result
-    	window.history.pushState(current_state, "", "");
+    	window.history.pushState(current_state, "", "?"+params);
     }
 
 	function addListenersToCpx() {
@@ -225,20 +241,15 @@
 		subAddSubmit();
 	};
 
-    var form = document.getElementById('search');
-    form.addEventListener('submit', addSubmit);
-
-    var log_button = document.getElementById('log');
-    log_button.addEventListener('click', onClickBtn);
-
-    var eng_button = document.getElementById('eng');
-    eng_button.addEventListener('click', onClickBtn);
-
-	var case_box = document.getElementById('check_case_sensitive');
-    case_box.addEventListener('click', subAddSubmit);
-
-	var event_selector = document.getElementById('event_selector');
-    event_selector.addEventListener('change', subAddSubmit);
+	function loadDefault() {
+		var state_from_url = JSON.parse('{"' + location.search.substring(1).replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+		console.log(state_from_url)
+		if (state_from_url.case_sensitive) {state_from_url.case_sensitive.toLowerCase() === 'true'} else {state_from_url.case_sensitive == false}
+		state_from_url.html = ""
+		sendRequest(state_from_url, applyResponse)
+		restoreState(state_from_url)
+		addListenersToCpx()
+	}
 
 </script>
 {% endblock %}
