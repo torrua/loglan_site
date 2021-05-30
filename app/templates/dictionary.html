@@ -160,14 +160,19 @@
 	var event_selector = document.getElementById('event_selector');
     event_selector.addEventListener('change', subAddSubmit);
 
-	window.onpopstate = function(e) { if(e.state) { restoreState(e.state); } };
+	window.onpopstate = function(e) {
+		if(e.state) {
+			restoreWordData(e.state.html)
+			restoreSettings(e.state)
+	 	}
+	 }
 
 	loadDefault();
 
-	function restoreState(data) {
-		// Restore page state and settings from data dictionary
-		document.getElementById('word_data').innerHTML = data.html
-		restoreSettings(data)
+	function restoreWordData(data) {
+		// Show word's data on page and add listeners for Cpx
+		if (!(data))  {data = ""}
+		document.getElementById('word_data').innerHTML = data
 		addListenersToCpx()
 	}
 
@@ -190,9 +195,9 @@
 		return current_state
 	}
 
-	function sendRequest(data, listener) {
+	function sendRequest(data) {
 		var request = new XMLHttpRequest()
-		request.addEventListener('load', listener)
+		request.addEventListener('load', applyResponse)
 		request.open('POST', {{ url_for('submit_search')|tojson }})
 
 		var form_data = new FormData()
@@ -202,53 +207,66 @@
 
 	function subAddSubmit() {
 		var current_state = collectState()
-		sendRequest(current_state, applyResponse);
+		sendRequest(current_state)
 	}
 
     function applyResponse() {
     	// this action runs after pressing the submit button
-    	var data = JSON.parse(this.responseText);
-    	var span = document.getElementById('word_data');
-    	span.innerHTML = data.result;
-		addListenersToCpx();
+    	var data = JSON.parse(this.responseText)
+
+		restoreWordData(data.result)
 
 		var current_state = collectState()
-		var params = new URLSearchParams(current_state).toString();
+		var params = new URLSearchParams(current_state).toString()
 
 		current_state['html'] = data.result
-    	window.history.pushState(current_state, "", "?"+params);
+    	window.history.pushState(current_state, "", "?"+params)
     }
 
 	function addListenersToCpx() {
-		var elements = document.getElementsByClassName("m_cpx");
+		var elements = document.getElementsByClassName("m_cpx")
 		for (var i = 0; i < elements.length; i++) {
-			elements[i].addEventListener('click', pressDjifoa);
+			elements[i].addEventListener('click', pressDjifoa)
 		}
 	}
 
     function addSubmit(ev) {
-		ev.preventDefault();
-		subAddSubmit();
+		ev.preventDefault()
+		subAddSubmit()
     }
-
-    function onClickBtn() {
-    	this.blur();
-    	subAddSubmit();
-    }
-
 	var pressDjifoa = function() {
 		document.getElementById('search_field').value = this.innerText
-		subAddSubmit();
-	};
+		subAddSubmit()
+	}
+
+    function onClickBtn() {
+    	this.blur()
+    	subAddSubmit()
+    }
 
 	function loadDefault() {
-		var state_from_url = JSON.parse('{"' + location.search.substring(1).replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
-		console.log(state_from_url)
-		if (state_from_url.case_sensitive) {state_from_url.case_sensitive.toLowerCase() === 'true'} else {state_from_url.case_sensitive == false}
-		state_from_url.html = ""
-		sendRequest(state_from_url, applyResponse)
-		restoreState(state_from_url)
-		addListenersToCpx()
+		if (location.search === '') {
+			var current_state = collectState()
+			window.history.pushState(current_state, "", "")
+		}
+		else {
+			var settings_from_url = collectSettingsFromUrl()
+			restoreSettings(settings_from_url)
+			sendRequest(settings_from_url)
+		}
+	}
+
+	function collectSettingsFromUrl() {
+		var settings_from_url = JSON.parse('{"' + location.search.substring(1).replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+
+		if (settings_from_url.case_sensitive) { settings_from_url.case_sensitive = settings_from_url.case_sensitive.toLowerCase() === 'true'}
+		else { settings_from_url.case_sensitive == false }
+
+    	if (!(settings_from_url.esi)) {settings_from_url.esi = 0}
+    	if (!(settings_from_url.language_id)) {settings_from_url.language_id = "log"}
+    	if (!(settings_from_url.event_id)) {settings_from_url.event_id = 6}
+
+		return settings_from_url
 	}
 
 </script>

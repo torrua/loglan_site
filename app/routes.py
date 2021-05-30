@@ -11,6 +11,7 @@ from loglan_db.model import Event
 from loglan_db.model_html.html_word import HTMLExportWord as Word
 
 from app import app
+from config import log
 from functions import get_data
 
 DEFAULT_SEARCH_LANGUAGE = os.getenv("DEFAULT_SEARCH_LANGUAGE", "log")
@@ -80,9 +81,11 @@ def columns():
 
 
 @app.route("/dictionary")
+@app.route("/dictionary/")
 def dictionary():
     events = {event.id: event.name for event in reversed(Event.get_all())}
-    return render_template("dictionary.html", events=events)
+    content = generate_content(request.args)
+    return render_template("dictionary.html", content=content, events=events)
 
 
 @app.route("/how_to_read")
@@ -92,12 +95,17 @@ def how_to_read():
 
 @app.route("/submit_search", methods=["POST"])
 def submit_search():
-    search_language = request.form.get('language_id', DEFAULT_SEARCH_LANGUAGE)
-    word = request.form.get("word", "")
-    event_id = request.form.get("event_id", Event.latest().id)
-    is_case_sensitive = bool(distutils.util.strtobool(request.form.get("case_sensitive", False)))
+    return generate_content(request.form)
 
-    if not word:
+
+def generate_content(data):
+
+    word = data.get("word", str())
+    search_language = data.get('language_id', DEFAULT_SEARCH_LANGUAGE)
+    event_id = data.get("event_id", Event.latest().id)
+    is_case_sensitive = data.get("case_sensitive", False)
+
+    if not word or not data:
         return jsonify(result="<div></div>")
 
     nothing = """
@@ -105,6 +113,9 @@ def submit_search():
   %s
 </div>
     """
+
+    if isinstance(is_case_sensitive, str):
+        is_case_sensitive = bool(distutils.util.strtobool(is_case_sensitive))
 
     if search_language == "log":
         result = Word.html_all_by_name(
@@ -127,7 +138,6 @@ def submit_search():
                                f"{' or disable Case sensitive search' if is_case_sensitive else ''}."
     else:
         result = nothing % f"Sorry, but nothing was found for <b>{word}</b>."
-
     return jsonify(result=result)
 
 
