@@ -1,9 +1,7 @@
-Flask==1.1.2
-Flask-SQLAlchemy==2.4.4
-gunicorn==20.1.0
-Loglan-DB==0.1.7
-psycopg2==2.8.6
-SQLAlchemy==1.3.22
-
-Beautifulsoup4==4.9.3
-lxml==4.6.3
+Flask~=3.0
+gunicorn~=21.2
+Loglan-Core~=0.1
+psycopg2~=2.9
+SQLAlchemy~=2.0
+Beautifulsoup4~=4.12
+lxml~=4.9
