@@ -5,7 +5,7 @@ from urllib import request, error
 from bs4 import BeautifulSoup
 
 
-def get_data(url: str, parser: str = "lxml", headers: dict = None) -> dict:
+def get_data(url: str, parser: str = "lxml", headers: dict = None) -> dict[str, bool | str | BeautifulSoup]:
     """
     This function downloads and parses content of URL site
     :url: address of needed site or directory

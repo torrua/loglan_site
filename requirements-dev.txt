@@ -1,0 +1,4 @@
+pylint~=3.0
+radon~=6.0
+mypy~=1.7
+black~=23.12
