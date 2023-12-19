@@ -7,23 +7,16 @@ import distutils.util
 import os
 
 from flask import jsonify, render_template, request, redirect, url_for
-from loglan_db.model import Event
-from loglan_db.model_html.html_word import HTMLExportWord as Word
-
+from app.compose.english_item import EnglishItem
+from app.compose.loglan_item import LoglanItem, Composer
+from loglan_core import Event
+from app.engine import Session
 from app import app
-from config import log
 from functions import get_data
 
 DEFAULT_SEARCH_LANGUAGE = os.getenv("DEFAULT_SEARCH_LANGUAGE", "log")
 DEFAULT_HTML_STYLE = os.getenv("DEFAULT_HTML_STYLE", "normal")
 main_site = "http://www.loglan.org/"
-
-"""
-@app.route("/", defaults={"js": "plain"})
-@app.route("/<any(plain, jquery, fetch):js>")
-def index(js):
-    return render_template(f"{js}.html", js=js)
-"""
 
 
 @app.route('/Articles/')
@@ -83,7 +76,9 @@ def columns():
 @app.route("/dictionary")
 @app.route("/dictionary/")
 def dictionary():
-    events = {event.id: event.name for event in reversed(Event.get_all())}
+    session = Session()
+    events = session.query(Event).all()
+    events = {event.id: event.name for event in reversed(events)}
     content = generate_content(request.args)
     return render_template("dictionary.html", content=content, events=events)
 
@@ -99,10 +94,10 @@ def submit_search():
 
 
 def generate_content(data):
-
+    session = Session()
     word = data.get("word", str())
     search_language = data.get('language_id', DEFAULT_SEARCH_LANGUAGE)
-    event_id = data.get("event_id", Event.latest().id)
+    event_id = data.get("event_id", 1)
     is_case_sensitive = data.get("case_sensitive", False)
 
     if not word or not data:
@@ -118,21 +113,21 @@ def generate_content(data):
         is_case_sensitive = bool(distutils.util.strtobool(is_case_sensitive))
 
     if search_language == "log":
-        result = Word.html_all_by_name(
-            name=word, style=DEFAULT_HTML_STYLE,
-            event_id=event_id,
-            case_sensitive=is_case_sensitive)
+
+        word_statement = LoglanItem.query_select_words(name=word, event_id=event_id, case_sensitive=is_case_sensitive)
+        word_result = session.execute(word_statement).scalars().all()
+        result = Composer(words=word_result, style=DEFAULT_HTML_STYLE).export_as_html()
 
         if not result:
             result = nothing % f"There is no word <b>{word}</b> in Loglan. Try switching to English" \
                                f"{' or disable Case sensitive search' if is_case_sensitive else ''}."
 
     elif search_language == "eng":
-        result = Word.translation_by_key(
-            key=word, style=DEFAULT_HTML_STYLE,
-            event_id=event_id,
-            case_sensitive=is_case_sensitive)
+        definitions_statement = EnglishItem.select_definitions_by_key(key=word, event_id=event_id, case_sensitive=is_case_sensitive)
+        definitions_result = session.execute(definitions_statement).scalars().all()
 
+        result = EnglishItem(definitions=definitions_result, key=word, style=DEFAULT_HTML_STYLE).export_as_html()
+        print(result)
         if not result:
             result = nothing % f"There is no word <b>{word}</b> in English. Try switching to Loglan" \
                                f"{' or disable Case sensitive search' if is_case_sensitive else ''}."

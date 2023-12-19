@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-"""The main module for launching Heroku application"""
+"""The main module for launching app"""
 
-from os import environ
-from app import app
+from app.routes import app
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(environ.get('PORT', 5000)))
+    app.run(debug=True)
