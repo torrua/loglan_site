@@ -146,7 +146,6 @@ def generate_content(data):
         result = EnglishItem(
             definitions=definitions_result, key=word, style=DEFAULT_HTML_STYLE
         ).export_as_html()
-        print(result)
         if not result:
             result = (
                 nothing
